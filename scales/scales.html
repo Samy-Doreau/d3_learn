@@ -23,9 +23,10 @@
         [25, 67],
         [85, 21],
         [220, 88],
+        [600, 150],
       ];
-      var w = 500;
-      var h = 200;
+      var w = 800;
+      var h = 300;
       var padding = 20;
 
       var xScale = d3
@@ -46,6 +47,27 @@
           }),
         ])
         .range([h - padding, padding]);
+
+      var rScale = d3
+        .scaleLinear()
+        .domain([
+          0,
+          d3.max(dataset, function (d) {
+            return d[1];
+          }),
+        ])
+        .range([2, 5]);
+
+      var aScale = d3
+        .scaleSqrt()
+        .domain([
+          0,
+          d3.max(dataset, function (d) {
+            return d[1];
+          }),
+        ])
+        .range([0, 10]);
+
       var svg = d3
         .select("body")
         .append("svg")
@@ -64,7 +86,7 @@
           return yScale(d[1]);
         })
         .attr("r", function (d) {
-          return Math.sqrt(h - d[1]);
+          return aScale(d[1]);
         });
       svg
         .selectAll("text")
