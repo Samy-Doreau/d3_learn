@@ -63,18 +63,51 @@ svg
 //On click, update with new data
 d3.select("p").on("click", function () {
   //New values for dataset
-  dataset = [
-    11, 12, 15, 20, 18, 17, 16, 18, 23, 25, 5, 10, 13, 19, 21, 25, 22, 18, 15,
-    13,
-  ];
+  //   dataset = [
+  //     11, 12, 15, 20, 18, 17, 16, 18, 23, 25, 5, 10, 13, 19, 21, 25, 22, 18, 15,
+  //     13,
+  //   ];
 
-  var numValues = dataset.length;
-  var maxValue = 500;
-  dataset = [];
-  for (let i = 0; i < numValues; i++) {
-    dataset.push(Math.floor(Math.random() * maxValue));
-  }
+  //   var numValues = dataset.length;
+  var maxValue = 25;
+  var newNumber = Math.floor(Math.random() * maxValue);
+  dataset.push(newNumber);
+
+  xScale.domain(d3.range(dataset.length));
+  //   dataset = [];
+  //   for (let i = 0; i < numValues; i++) {
+  //     dataset.push(Math.floor(Math.random() * maxValue));
+  //   }
   yScale.domain([0, d3.max(dataset)]);
+
+  var bars = svg.selectAll("rect").data(dataset);
+  bars
+    .enter()
+    .append("rect")
+    .attr("x", w)
+    .attr("y", function (d) {
+      return h - yScale(d);
+    })
+    .attr("width", xScale.bandwidth())
+    .attr("height", function (d) {
+      return yScale(d);
+    })
+    .attr("fill", function (d) {
+      return "rgb(0,0, " + Math.round(d * 10) + ")";
+    })
+    .merge(bars)
+    .transition()
+    .duration(500)
+    .attr("x", function (d, i) {
+      return xScale(i);
+    })
+    .attr("y", function (d) {
+      return h - yScale(d);
+    })
+    .attr("width", xScale.bandwidth())
+    .attr("height", function (d) {
+      return yScale(d);
+    });
   //Update all rects
   svg
     .selectAll("rect")
