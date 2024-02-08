@@ -62,9 +62,7 @@ svg
 //On click, update with new data
 d3.select("p").on("click", function () {
   //Add one new value to dataset
-  var maxValue = 25;
-  var newNumber = Math.floor(Math.random() * maxValue); //New random integer (0-24)
-  dataset.push(newNumber); //Add new number to array
+  dataset.shift();
 
   //Update scale domains
   xScale.domain(d3.range(dataset.length)); //Recalibrate the x scale domain, given the new length of dataset
@@ -111,13 +109,40 @@ d3.select("p").on("click", function () {
       return yScale(d);
     });
 
+  bars.exit().transition().duration(500).attr("x", w).remove();
+
   //Update all labels
   //
   //Exercise: Modify this code to add a new label each time a new bar is added!
   //
-  svg
-    .selectAll("text")
-    .data(dataset)
+
+  var labels = svg.selectAll("text").data(dataset);
+
+  labels
+    .enter()
+    .append("text")
+    .text(function (d) {
+      return d;
+    })
+    .attr("text-anchor", "middle")
+    .attr("x", function (d, i) {
+      return xScale(i) + xScale.bandwidth() / 2;
+    })
+    .attr("y", function (d) {
+      if (d <= 1) {
+        return h - yScale(d) - 2;
+      } else {
+        return h - yScale(d) + 14;
+      }
+    })
+    .attr("fill", function (d) {
+      if (d <= 1) {
+        return "black";
+      } else {
+        return "white";
+      }
+    })
+    .merge(labels)
     .transition()
     .duration(500)
     .text(function (d) {
@@ -127,6 +152,21 @@ d3.select("p").on("click", function () {
       return xScale(i) + xScale.bandwidth() / 2;
     })
     .attr("y", function (d) {
-      return h - yScale(d) + 14;
+      if (d <= 1) {
+        return h - yScale(d) - 2;
+      } else {
+        return h - yScale(d) + 14;
+      }
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("fill", function (d) {
+      if (d <= 1) {
+        return "black";
+      } else {
+        return "white";
+      }
     });
+
+  labels.exit().transition().duration(500).attr("x", w).remove();
 });
