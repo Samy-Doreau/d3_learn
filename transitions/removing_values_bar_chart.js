@@ -61,8 +61,10 @@ svg
 
 //On click, update with new data
 d3.select("p").on("click", function () {
-  //Add one new value to dataset
+  var paragraphID = d3.select(this).attr("id");
   dataset.shift();
+  //Add one new value to dataset
+  dataset.pop();
 
   //Update scale domains
   xScale.domain(d3.range(dataset.length)); //Recalibrate the x scale domain, given the new length of dataset

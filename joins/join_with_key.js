@@ -31,8 +31,27 @@ var key = function (d) {
 
 //Create SVG element
 var svg = d3.select("body").append("svg").attr("width", w).attr("height", h);
-var highlightRect = svg.append('rect').attr('x',0).attr('y',0).attr('width',0).attr('height',h).attr('fill','gray').style('opactity',0)
+var highlightRect = svg
+  .append("rect")
+  .attr("x", 0)
+  .attr("y", 0)
+  .attr("width", 0)
+  .attr("height", h)
+  .attr("fill", "gray")
+  .style("opacity", 0);
 
+var sortBars = function () {
+  svg
+    .selectAll("rect")
+    .sort(function (a, b) {
+      return d3.descending(a, b);
+    })
+    .transition()
+    .duration(1000)
+    .attr("x", function (d, i) {
+      return xScale(i);
+    });
+};
 
 //Create bars
 svg
@@ -52,19 +71,27 @@ svg
   })
   .attr("fill", function (d) {
     return "rgb(0, 0, " + Math.round(d.value * 10) + ")";
-  }).on("click", function(event,d){console.log(d.value)}).on("mouseover", function(event,d){
-    d3.select(this).attr('fill', "orange");
+  })
+  .on("mouseover", function (event, d) {
+    d3.select(this).transition().attr("fill", "orange");
 
-    var x = xScale(d.key)
-    var width = xScale.bandwidth()
-    highlightRect.attr('x',x).attr('width', width).style('opacity',0.5)
+    var x = xScale(d.key);
+    var width = xScale.bandwidth();
+    highlightRect.attr("x", x).attr("width", width).style("opacity", 0.5);
+  })
+  .on("mouseout", function (event, d) {
+    d3.select(this)
+      .interrupt()
+      .transition()
+      .duration(1000)
+      .attr("fill", function (d) {
+        return "rgb(0, 0, " + Math.round(d.value * 10) + ")";
+      });
 
-  }).on('mouseout', function(d){
-    d3.select(this).attr("fill", function (d) {
-      return "rgb(0, 0, " + Math.round(d.value * 10) + ")";
-    })
-
-    highlightRect.style('opacity',0)
+    highlightRect.style("opacity", 0);
+  })
+  .on("click", function () {
+    sortBars();
   });
 
 //Create labels
@@ -73,6 +100,7 @@ svg
   .data(dataset)
   .enter()
   .append("text")
+  .style("pointer-events", "none")
   .text(function (d) {
     return d.value;
   })
