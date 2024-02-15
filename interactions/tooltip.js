@@ -43,19 +43,27 @@ svg
     d3.select(this).attr("fill", "orange");
     var xPosition =
       parseFloat(d3.select(this).attr("x")) + xScale.bandwidth() / 2;
-    var yPosition = parseFloat(d3.select(this).attr("y")) + 14;
+    var yPosition = parseFloat(d3.select(this).attr("y")) / 2 + h / 2;
 
-    svg
-      .append("text")
-      .attr("id", "tooltip")
-      .attr("x", xPosition)
-      .attr("y", yPosition)
-      .attr("text-anchor", "middle")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "11px")
-      .attr("font-weight", "bold")
-      .attr("fill", "black")
+    d3.select("#tooltip")
+      .style("left", xPosition + "px")
+      .style("top", yPosition + "px")
+      .select("#value")
       .text(d);
+
+    d3.select("#tooltip").classed("hidden", false);
+
+    // svg
+    //   .append("text")
+    //   .attr("id", "tooltip")
+    //   .attr("x", xPosition)
+    //   .attr("y", yPosition)
+    //   .attr("text-anchor", "middle")
+    //   .attr("font-family", "sans-serif")
+    //   .attr("font-size", "11px")
+    //   .attr("font-weight", "bold")
+    //   .attr("fill", "black")
+    //   .text(d);
   })
   .on("mouseout", function (d) {
     d3.select(this)
@@ -64,7 +72,7 @@ svg
       .attr("fill", function (d) {
         return "rgb(0, 0, " + Math.round(d * 10) + ")";
       });
-    d3.select("#tooltip").remove();
+    d3.select("#tooltip").classed("hidden", true);
   })
   .on("click", function () {
     sortBars("sortBars");
