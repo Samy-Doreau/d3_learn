@@ -59,27 +59,33 @@ d3.csv("../mauna_loa_co2_monthly_averages.csv", rowConverter).then(function (
   yAxis = d3.axisLeft().scale(yScale).ticks(10);
 
   //Define line generator
-  line = d3
-    .line()
+  area = d3
+    .area()
     .defined(function (d) {
-      return d.average >= 0 && d.average <= 350;
+      return d.average >= 0;
     })
     .x(function (d) {
       return xScale(d.date);
     })
-    .y(function (d) {
+    .y0(function () {
+      return yScale.range()[0];
+    })
+    .y1(function (d) {
       return yScale(d.average);
     });
 
-  dangerLine = d3
-    .line()
+  dangerArea = d3
+    .area()
     .defined(function (d) {
       return d.average >= 350;
     })
     .x(function (d) {
       return xScale(d.date);
     })
-    .y(function (d) {
+    .y0(function () {
+      return yScale(350);
+    })
+    .y1(function (d) {
       return yScale(d.average);
     });
 
@@ -87,13 +93,12 @@ d3.csv("../mauna_loa_co2_monthly_averages.csv", rowConverter).then(function (
   var svg = d3.select("body").append("svg").attr("width", w).attr("height", h);
 
   //Create line
-  svg.append("path").datum(dataset).attr("class", "line").attr("d", line);
+  svg.append("path").datum(dataset).attr("class", "area").attr("d", area);
   svg
     .append("path")
     .datum(dataset)
-    .attr("class", "line danger")
-    .attr("d", dangerLine);
-
+    .attr("class", "area danger")
+    .attr("d", dangerArea);
   svg
     .append("line")
     .attr("class", "line safelevel")
