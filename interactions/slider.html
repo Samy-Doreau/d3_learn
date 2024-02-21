@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>D3 Page Template</title>
+    <script type="text/javascript" src="../d3.v7.js"></script>
+
+    <style type="text/css">
+      p {
+        display: inline-block;
+      }
+
+      input {
+        height: 250px;
+        width: 30px;
+
+        /* Orient vertically */
+        -webkit-appearance: slider-vertical;
+        writing-mode: bt-lr;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      <input
+        id="slider"
+        type="range"
+        min="0"
+        max="25"
+        step="1"
+        value="0"
+        orient="vertical"
+      />
+    </p>
+
+    <script type="text/javascript" src="slider.js"></script>
+  </body>
+</html>
